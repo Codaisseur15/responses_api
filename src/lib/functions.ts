@@ -36,3 +36,7 @@ export const scoresForQuiz = (quiz, quizResponse) => {
   return Object.keys(questionsScore)
         .reduce((sum,k)=> sum+questionsScore[k],0)
 }
+
+export const averageScore = (listOfresponses) => {
+  return listOfresponses.reduce((sum,res)=> sum + res.score,0)/listOfresponses.length
+}
