@@ -12,8 +12,8 @@ export const scoresForAnswers = (answers) => {
 export const scoresForQuestions = (questions, quizResponse) => {
   let scores ={}
   questions.map(quest => {
-    const scoreForThis = scoresForAnswers(quest.answers)
-    const scoreList = quest.answers.map(ans => {
+    const scoreForThis = scoresForAnswers(quest.answer)
+    const scoreList = quest.answer.map(ans => {
       if (quizResponse[quest.id].includes(ans.id) && ans.correct)
         return scoreForThis.right
       if (quizResponse[quest.id].includes(ans.id) && !ans.correct)
@@ -23,7 +23,7 @@ export const scoresForQuestions = (questions, quizResponse) => {
     })
     const score = scoreList.reduce((sum, s) => sum + s, 0)
     return (
-      scores[quest.id] = score<0? 0 : score
+      scores[quest.id] = score<0? 0 : Math.round(score*100)/100
     )
   })
   return scores
@@ -32,11 +32,12 @@ export const scoresForQuestions = (questions, quizResponse) => {
 //Compute the score for a quiz
 //Max score is number of questions
 export const scoresForQuiz = (quiz, quizResponse) => {
-  const questionsScore = scoresForQuestions(quiz.questions, quizResponse)
+  const questionsScore = scoresForQuestions(quiz.question, quizResponse)
   return Object.keys(questionsScore)
         .reduce((sum,k)=> sum+questionsScore[k],0)
 }
 
+//Give a list of responses, we can compute the averageScore
 export const averageScore = (listOfresponses) => {
   return listOfresponses.reduce((sum,res)=> sum + res.score,0)/listOfresponses.length
 }
