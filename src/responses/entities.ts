@@ -19,10 +19,10 @@ export class Response extends BaseEntity {
   @Column('json')
   quizResponse: { [questionId: number]: number[] }
 
-  @Column('int')
+  @Column('real')
   score: number
 
-  @Column('int')
+  @Column('real')
   maxScore: number
 }
 
