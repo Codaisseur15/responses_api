@@ -3,7 +3,7 @@ import {createKoaServer} from "routing-controllers"
 import ResponseController from './responses/controller'
 import setupDb from './db'
 
-const port = process.env.PORT || 4008
+const port = process.env.PORT || 4001
 
 const app = createKoaServer({
   controllers: [
