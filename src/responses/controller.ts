@@ -3,8 +3,8 @@ import {
   Body, Patch
 } from 'routing-controllers'
 import { Response} from './entities'
-import {scoresForQuiz} from '../lib/functions'
-export const baseUrl = 'http://localhost:4000'
+import {scoresForQuiz,averageScore} from '../lib/functions'
+export const baseUrl = 'http://localhost:4008'
 import * as request from 'superagent'
 
 @JsonController()
@@ -35,5 +35,21 @@ export default class ResponseController {
     if (!response) throw new BadRequestError(`Response does not exist`)
 
     return response
+  }
+
+  @Get('/results/quiz=:quizId/course=:courseId')
+  async getResults(
+    @Param('quizId') quizId: number,
+    @Param('courseId') courseId: number
+  ) {
+    const responseList = await Response.find({courseId,quizId})
+    if (responseList.length===0) throw new NotFoundError('No result')
+    const averagePercent = (averageScore(responseList)*100)/responseList[0].maxScore
+    return {
+      quizId,
+      courseId,
+      numberOfTakers:responseList.length,
+      average:Math.round(averagePercent*100)/100
+    }
   }
 }
