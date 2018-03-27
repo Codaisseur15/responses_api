@@ -1,8 +1,10 @@
 //Given an array of answers, we need to compute the score for a right and wrong answer
 export const scoresForAnswers = (answers) => {
+  const rigthLength = answers.filter(ans => ans.correct===true).length
+  const wrongLength = answers.filter(ans => ans.correct===false).length
   return {
-    right: 1/(answers.filter(ans => ans.correct===true)).length,
-    wrong: -1/(answers.filter(ans => ans.correct===false)).length
+    right: rigthLength===0? 0: 1/rigthLength,
+    wrong: wrongLength===0? 0:-1/wrongLength
   }
 }
 
