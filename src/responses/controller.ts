@@ -3,9 +3,11 @@ import {
   Body, Patch
 } from 'routing-controllers'
 import { Response} from './entities'
-import {scoresForQuiz,averageScore} from '../lib/functions'
+import {scoresForQuiz,averageScore, uniqueElements} from '../lib/functions'
 export const baseUrl = 'http://localhost:4008'
+
 import * as request from 'superagent'
+const eventUrl = process.env.EVENT_URL || 'http://localhost:4002/events'
 
 @JsonController()
 export default class ResponseController {
@@ -34,6 +36,14 @@ export default class ResponseController {
     const response = await Response.findOneById(entity.id)
     if (!response) throw new BadRequestError(`Response does not exist`)
 
+    const {hasId, remove, save, ...eventData} = response
+
+    await request
+      .post(eventUrl)
+      .send({
+        event: 'response',
+        data: eventData
+      })
     return response
   }
 
@@ -51,5 +61,27 @@ export default class ResponseController {
       numberOfTakers:responseList.length,
       average:Math.round(averagePercent*100)/100
     }
+  }
+
+  @Get('/results/quiz/:quizId([0-9]+)')
+  async getResultsByQuiz(
+    @Param('quizId') quizId: number
+  ) {
+    const responseList = await Response.find({quizId})
+
+    if (responseList.length===0) throw new NotFoundError('No result')
+
+    const courseIds = uniqueElements(responseList.map(res => res.courseId))
+
+    return courseIds.map(courseId => {
+      const List = responseList.filter(res => res.courseId===courseId)
+      const averagePercent = (averageScore(List)*100)/List[0].maxScore
+      return {
+        quizId,
+        courseId,
+        numberOfTakers:List.length,
+        average:Math.round(averagePercent*100)/100
+      }
+    })
   }
 }
