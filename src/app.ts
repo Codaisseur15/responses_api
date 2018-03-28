@@ -6,6 +6,7 @@ import ResponseControllerB from './responses/controller2'
 
 
 export default createKoaServer({
+  cors: true,
   controllers: [
     ResponseControllerB,
     ResponseController
