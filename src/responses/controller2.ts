@@ -27,6 +27,7 @@ export default class ResponseControllerB {
       @Param('id') id: number
     ) {
       const response = await Response.findOneById(id)
+      if (!response) throw new NotFoundError ('Response not found')
       await response.remove()
 
       return {
@@ -40,18 +41,25 @@ export default class ResponseControllerB {
        @Param('courseId') courseId: number
      ){
 
-       const courses= await Response.find({courseId})
-       await  courses.map(course => course.remove())
+      const courses= await Response.find({courseId})
+      await courses.forEach(course => course.remove())
+
+       return {
+           message: "You succesfully deleted all responses related to the removed course"
+       }
 
        }
 
    @Delete('/responses/quizzes/:quizId([0-9]+)')
    @HttpCode(201)
-      async deleteStudent(
+      async deleteQuiz(
         @Param('quizId') quizId: number
       ){
         const quizzes= await Response.find({quizId})
-        await  quizzes.map(quiz => quiz.remove())
+        await  quizzes.forEach(quiz => quiz.remove())
+        return {
+            message: "You succesfully deleted all responses related to the removed quiz"
+        }
       }
 
 
