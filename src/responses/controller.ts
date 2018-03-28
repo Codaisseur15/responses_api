@@ -84,4 +84,13 @@ export default class ResponseController {
       }
     })
   }
+
+  @Get('/responses/quiz/:quizId')
+  async getResponsesByQuiz(
+    @Param('quizId') quizId:number
+  ) {
+    const list = await Response.find({quizId})
+    if (list.length===0) throw new NotFoundError('No result')
+    return list
+  }
 }

@@ -8,7 +8,7 @@ const port = process.env.PORT || 4001
 
 const app = createKoaServer({
   controllers: [
-    ResponseControllerB
+    ResponseControllerB,
     ResponseController
   ]
 })
