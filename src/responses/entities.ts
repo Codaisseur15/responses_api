@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, Entity, Index, OneToMany, ManyToOne } from 'typeorm'
+import { BaseEntity, PrimaryGeneratedColumn, Column, Entity } from 'typeorm'
 
 
 @Entity()
@@ -19,10 +19,10 @@ export class Response extends BaseEntity {
   @Column('json')
   quizResponse: { [questionId: number]: number[] }
 
-  @Column('int')
+  @Column('real')
   score: number
 
-  @Column('int')
+  @Column('real')
   maxScore: number
 }
 
