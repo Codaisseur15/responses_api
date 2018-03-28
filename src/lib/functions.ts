@@ -43,3 +43,7 @@ export const scoresForQuiz = (quiz, quizResponse) => {
 export const averageScore = (listOfresponses) => {
   return listOfresponses.reduce((sum,res)=> sum + res.score,0)/listOfresponses.length
 }
+
+export const uniqueElements = (array) => {
+  return array.filter((elem,index) => array.indexOf(elem)===index)
+}
