@@ -4,10 +4,10 @@ import {
 } from 'routing-controllers'
 import { Response} from './entities'
 import {scoresForQuiz,averageScore, uniqueElements} from '../lib/functions'
-export const baseUrl = 'http://localhost:4008'
-
 import * as request from 'superagent'
-const eventUrl = process.env.EVENT_URL || 'http://localhost:4002/events'
+
+const quizzesUrl = process.env.QUIZZES_URL || 'http://localhost:4008'
+const webhooksUrl = process.env.WEBHOOKS_URL || 'http://localhost:4002'
 
 @JsonController()
 export default class ResponseController {
@@ -19,7 +19,7 @@ export default class ResponseController {
   ) {
     var quiz
     await request
-      .get(`${baseUrl}/quizzes/${quizId}`)
+      .get(`${quizzesUrl}/quizzes/${quizId}`)
       .then(result => {
         quiz=result.body
       })
@@ -39,7 +39,7 @@ export default class ResponseController {
     const {hasId, remove, save, ...eventData} = response
 
     await request
-      .post(eventUrl)
+      .post(`${webhooksUrl}/events`)
       .send({
         event: 'response',
         data: eventData
