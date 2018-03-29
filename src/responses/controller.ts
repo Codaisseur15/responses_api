@@ -1,6 +1,6 @@
 import {
   JsonController, Authorized, CurrentUser, Post, Param, BadRequestError, HttpCode, NotFoundError, ForbiddenError, Get,
-  Body, Patch
+  Body, Patch, HeaderParam
 } from 'routing-controllers'
 import { Response} from './entities'
 import {scoresForQuiz,averageScore, uniqueElements} from '../lib/functions'
@@ -50,8 +50,12 @@ export default class ResponseController {
   @Get('/results/quiz=:quizId/course=:courseId')
   async getResults(
     @Param('quizId') quizId: number,
-    @Param('courseId') courseId: number
+    @Param('courseId') courseId: number,
+    @HeaderParam("x-user-role") userRole : string,
+    @HeaderParam("x-user-id") userId : number,
   ) {
+    if (userRole !== 'teacher' && userId === null) throw new NotFoundError('You are not authorised')
+
     const responseList = await Response.find({courseId,quizId})
     if (responseList.length===0) throw new NotFoundError('No result')
     const averagePercent = (averageScore(responseList)*100)/responseList[0].maxScore
@@ -65,8 +69,13 @@ export default class ResponseController {
 
   @Get('/results/quiz/:quizId([0-9]+)')
   async getResultsByQuiz(
-    @Param('quizId') quizId: number
+    @Param('quizId') quizId: number,
+    @HeaderParam("x-user-role") userRole : string,
+    @HeaderParam("x-user-id") userId : number,
   ) {
+
+    if (userRole !== 'teacher' && userId === null) throw new NotFoundError('You are not authorised')
+
     const responseList = await Response.find({quizId})
 
     if (responseList.length===0) throw new NotFoundError('No result')
@@ -87,8 +96,12 @@ export default class ResponseController {
 
   @Get('/responses/quiz/:quizId')
   async getResponsesByQuiz(
-    @Param('quizId') quizId:number
+    @Param('quizId') quizId:number,
+    @HeaderParam("x-user-role") userRole : string,
+    @HeaderParam("x-user-id") userId : number,
   ) {
+    if (userRole !== 'teacher' && userId === null) throw new NotFoundError('You are not authorised')
+
     const list = await Response.find({quizId})
     if (list.length===0) throw new NotFoundError('No result')
     return list
